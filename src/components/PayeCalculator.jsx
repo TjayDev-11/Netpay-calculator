@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 
-const PayeCalculator = () => {
-  const [basicSalary, setBasicSalary] = useState('');
-  const [benefits, setBenefits] = useState('');
-  const [pension, setPension] = useState('');
-  const [mortgageInterest, setMortgageInterest] = useState('');
-  const [medicalFund, setMedicalFund] = useState('');
-  const [results, setResults] = useState(null);
+const PayeCalculator = ({
+  setResults,
+  results,
+  basicSalary,
+  setBasicSalary,
+  benefits,
+  setBenefits,
+  pension,
+  setPension,
+  mortgageInterest,
+  setMortgageInterest,
+  medicalFund,
+  setMedicalFund,
+}) => {
   const [errors, setErrors] = useState({
     basicSalary: '',
     benefits: '',
@@ -15,6 +22,8 @@ const PayeCalculator = () => {
     medicalFund: '',
   });
   const [globalError, setGlobalError] = useState('');
+
+  const formatNumber = (num) => Number(num).toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const handleInputChange = (value, setter, field) => {
     if (value === '') {
@@ -159,387 +168,449 @@ const PayeCalculator = () => {
     setGlobalError('');
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
+  // Get current date in format: "January 15, 2026"
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex flex-col">
+    <main className="flex-grow py-8">
       <style>
         {`
           @media print {
-            header, .input-section, button {
-              display: none !important;
+            body * {
+              visibility: hidden;
             }
-            #results-section {
+            #print-content, #print-content * {
+              visibility: visible;
+            }
+            #print-content {
               display: block !important;
+              position: absolute;
+              left: 0;
+              top: 0;
               width: 100%;
-              padding: 20px;
+              padding: 40px;
               box-sizing: border-box;
+              background: white;
             }
-            body {
-              background: white !important;
+            header, .input-section, button, #results-section, footer {
+              display: none !important;
             }
           }
         `}
       </style>
-      <header className="relative text-white py-6 shadow-lg overflow-hidden">
-  {/* Gradient background with subtle diagonal transition */}
-  <div 
-    className="absolute inset-0 z-0 rounded-br-[30px]"
-    style={{
-      background: 'linear-gradient(135deg, #2F4F4F 0%, #1E3E3E 70%, #0D2C2C 100%)'
-    }}
-  ></div>
-  
-  {/* Soft white corner accent */}
-  <div className="absolute right-0 bottom-0 z-0 w-32 h-32">
-    <div className="absolute right-0 bottom-0 w-full h-full bg-white bg-opacity-10 rounded-tl-[50px] rounded-br-[30px] backdrop-blur-[1px]"></div>
-    <div className="absolute right-0 bottom-0 w-16 h-16 bg-white bg-opacity-5 rounded-tl-[30px]"></div>
-  </div>
-  
-  {/* Content */}
-  <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div className="flex justify-between items-center">
-      <div>
-        <h1 className="text-3xl text-cyan-300 font-bold">Net Pay Calculator</h1>
-        <p className="text-cyan-200 mt-1 opacity-90">Calculate Net Pay, PAYE, NSSF & Deductions</p>
-      </div>
-      <button
-        onClick={handlePrint}
-        disabled={!results}
-        className="hidden md:flex items-center bg-white bg-opacity-90 text-gray-800 px-4 py-2 rounded-lg shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-opacity-100 transition-all duration-300 hover:shadow-lg border border-gray-200"
-      >
-        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-        </svg>
-        Print
-      </button>
-    </div>
-  </div>
-</header>
-
-      <main className="flex-grow py-8">
-        <div id="calculator-container" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-            <div className="md:flex">
-              <div className="md:w-1/2 p-6 md:p-8 bg-gradient-to-br from-blue-50 to-gray-50 input-section">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">Enter Salary Details</h2>
-                <div className="space-y-5">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Basic Salary (KES)</label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={basicSalary}
-                        onChange={(e) => handleInputChange(e.target.value, setBasicSalary, 'basicSalary')}
-                        className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                      />
-                    </div>
-                    {errors.basicSalary && <p className="text-red-500 text-xs mt-1">{errors.basicSalary}</p>}
+      <div id="calculator-container" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+          <div className="md:flex">
+            <div className="md:w-1/2 p-6 md:p-8 bg-gradient-to-br from-blue-50 to-gray-50 input-section">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Enter Salary Details</h2>
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Basic Salary (KES)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={basicSalary}
+                      onChange={(e) => handleInputChange(e.target.value, setBasicSalary, 'basicSalary')}
+                      className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Benefits/Allowances (KES)</label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={benefits}
-                        onChange={(e) => handleInputChange(e.target.value, setBenefits, 'benefits')}
-                        className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    {errors.benefits && <p className="text-red-500 text-xs mt-1">{errors.benefits}</p>}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Pension Contribution (KES)</label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={pension}
-                        onChange={(e) => handleInputChange(e.target.value, setPension, 'pension')}
-                        className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    {errors.pension && <p className="text-red-500 text-xs mt-1">{errors.pension}</p>}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Mortgage Interest (KES)</label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={mortgageInterest}
-                        onChange={(e) => handleInputChange(e.target.value, setMortgageInterest, 'mortgageInterest')}
-                        className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    {errors.mortgageInterest && <p className="text-red-500 text-xs mt-1">{errors.mortgageInterest}</p>}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Medical Fund (KES)</label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={medicalFund}
-                        onChange={(e) => handleInputChange(e.target.value, setMedicalFund, 'medicalFund')}
-                        className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                    {errors.medicalFund && <p className="text-red-500 text-xs mt-1">{errors.medicalFund}</p>}
-                  </div>
-
-                  {globalError && <p className="text-red-500 text-xs mt-1">{globalError}</p>}
-                  <div className="flex space-x-4">
-                    <button
-                      onClick={calculateTax}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg"
-                    >
-                      Calculate Net Pay
-                    </button>
-                    <button
-                      onClick={handleReset}
-                      className="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white p-3 rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all shadow-md hover:shadow-lg"
-                    >
-                      Reset
-                    </button>
-                  </div>
+                  {errors.basicSalary && <p className="text-red-500 text-xs mt-1">{errors.basicSalary}</p>}
                 </div>
-              </div>
-
-              <div id="results-section" className="md:w-1/2 p-6 md:p-8 bg-white">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">Salary Breakdown</h2>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Benefits/Allowances (KES)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={benefits}
+                      onChange={(e) => handleInputChange(e.target.value, setBenefits, 'benefits')}
+                      className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.benefits && <p className="text-red-500 text-xs mt-1">{errors.benefits}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Pension Contribution (KES)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={pension}
+                      onChange={(e) => handleInputChange(e.target.value, setPension, 'pension')}
+                      className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.pension && <p className="text-red-500 text-xs mt-1">{errors.pension}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mortgage Interest (KES)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={mortgageInterest}
+                      onChange={(e) => handleInputChange(e.target.value, setMortgageInterest, 'mortgageInterest')}
+                      className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.mortgageInterest && <p className="text-red-500 text-xs mt-1">{errors.mortgageInterest}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Medical Fund (KES)</label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">KES</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={medicalFund}
+                      onChange={(e) => handleInputChange(e.target.value, setMedicalFund, 'medicalFund')}
+                      className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  {errors.medicalFund && <p className="text-red-500 text-xs mt-1">{errors.medicalFund}</p>}
+                </div>
+                {globalError && <p className="text-red-500 text-xs mt-1">{globalError}</p>}
+                <div className="flex space-x-4">
                   <button
-                    onClick={handlePrint}
-                    disabled={!results}
-                    className="md:hidden flex items-center bg-blue-600 text-white px-3 py-2 rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-all text-sm"
+                    onClick={calculateTax}
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg"
                   >
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                    Print
+                    Calculate Net Pay
+                  </button>
+                  <button
+                    onClick={handleReset}
+                    className="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white p-3 rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all shadow-md hover:shadow-lg"
+                  >
+                    Reset
                   </button>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-blue-800 mb-2">Salary Summary</h3>
-                    {results ? (
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <p className="text-xs text-gray-500">Gross Salary</p>
-                          <p className="font-bold">KES {results.gross.toLocaleString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Taxable Income</p>
-                          <p className="font-bold">KES {results.taxable.toLocaleString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Total Deductions</p>
-                          <p className="font-bold">KES {results.totalDeductions.toFixed(2)}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">PAYE Tax</p>
-                          <p className="font-bold">KES {results.paye.toFixed(2)}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Net Salary</p>
-                          <p className="font-bold text-green-600">KES {results.netPay.toFixed(2)}</p>
-                        </div>
+              </div>
+            </div>
+            <div id="results-section" className="md:w-1/2 p-6 md:p-8 bg-white">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Salary Breakdown</h2>
+              </div>
+              <div className="space-y-4">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-blue-800 mb-2">Salary Summary</h3>
+                  {results ? (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs text-gray-500">Gross Salary</p>
+                        <p className="font-bold">KES {formatNumber(results.gross)}</p>
                       </div>
-                    ) : (
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <p className="text-xs text-gray-500">Gross Salary</p>
-                          <p className="font-bold text-gray-400">KES -</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Taxable Income</p>
-                          <p className="font-bold text-gray-400">KES -</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Total Deductions</p>
-                          <p className="font-bold text-gray-400">KES -</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">PAYE Tax</p>
-                          <p className="font-bold text-gray-400">KES -</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-500">Net Salary</p>
-                          <p className="font-bold text-gray-400">KES -</p>
-                        </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Taxable Income</p>
+                        <p className="font-bold">KES {formatNumber(results.taxable)}</p>
                       </div>
-                    )}
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-2">Detailed Deductions</h3>
-                    {results ? (
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-sm">PAYE Tax</span>
-                          <span className="font-medium">KES {results.paye.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">NSSF Contribution</span>
-                          <span className="font-medium">KES {results.nssf.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">SHIF Contribution</span>
-                          <span className="font-medium">KES {results.shif.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">Affordable Housing Levy</span>
-                          <span className="font-medium">KES {results.ahl.toFixed(2)}</span>
-                        </div>
-                        {results.pension > 0 && (
-                          <div className="flex justify-between">
-                            <span className="text-sm">Pension Contribution</span>
-                            <span className="font-medium">KES {results.pension.toFixed(2)}</span>
-                          </div>
-                        )}
-                        {results.mortgage > 0 && (
-                          <div className="flex justify-between">
-                            <span className="text-sm">Mortgage Interest</span>
-                            <span className="font-medium">KES {results.mortgage.toFixed(2)}</span>
-                          </div>
-                        )}
-                        {results.medicalFund > 0 && (
-                          <div className="flex justify-between">
-                            <span className="text-sm">Medical Fund</span>
-                            <span className="font-medium">KES {results.medicalFund.toFixed(2)}</span>
-                          </div>
-                        )}
+                      <div>
+                        <p className="text-xs text-gray-500">Total Deductions</p>
+                        <p className="font-bold">KES {formatNumber(results.totalDeductions)}</p>
                       </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-sm">PAYE Tax</span>
-                          <span className="font-medium text-gray-400">KES -</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">NSSF Contribution</span>
-                          <span className="font-medium text-gray-400">KES -</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">SHIF Contribution</span>
-                          <span className="font-medium text-gray-400">KES -</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">Affordable Housing Levy</span>
-                          <span className="font-medium text-gray-400">KES -</span>
-                        </div>
+                      <div>
+                        <p className="text-xs text-gray-500">PAYE Tax</p>
+                        <p className="font-bold">KES {formatNumber(results.paye)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Net Salary</p>
+                        <p className="font-bold text-green-600">KES {formatNumber(results.netPay)}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs text-gray-500">Gross Salary</p>
+                        <p className="font-bold text-gray-400">KES -</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Taxable Income</p>
+                        <p className="font-bold text-gray-400">KES -</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Total Deductions</p>
+                        <p className="font-bold text-gray-400">KES -</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">PAYE Tax</p>
+                        <p className="font-bold text-gray-400">KES -</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Net Salary</p>
+                        <p className="font-bold text-gray-400">KES -</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-2">Detailed Deductions</h3>
+                  {results ? (
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm">PAYE Tax</span>
+                        <span className="font-medium">KES {formatNumber(results.paye)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">NSSF Contribution</span>
+                        <span className="font-medium">KES {formatNumber(results.nssf)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">SHIF Contribution</span>
+                        <span className="font-medium">KES {formatNumber(results.shif)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">Affordable Housing Levy</span>
+                        <span className="font-medium">KES {formatNumber(results.ahl)}</span>
+                      </div>
+                      {results.pension > 0 && (
                         <div className="flex justify-between">
                           <span className="text-sm">Pension Contribution</span>
-                          <span className="font-medium text-gray-400">KES -</span>
+                          <span className="font-medium">KES {formatNumber(results.pension)}</span>
                         </div>
+                      )}
+                      {results.mortgage > 0 && (
                         <div className="flex justify-between">
                           <span className="text-sm">Mortgage Interest</span>
-                          <span className="font-medium text-gray-400">KES -</span>
+                          <span className="font-medium">KES {formatNumber(results.mortgage)}</span>
                         </div>
+                      )}
+                      {results.medicalFund > 0 && (
                         <div className="flex justify-between">
                           <span className="text-sm">Medical Fund</span>
-                          <span className="font-medium text-gray-400">KES -</span>
+                          <span className="font-medium">KES {formatNumber(results.medicalFund)}</span>
                         </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm">PAYE Tax</span>
+                        <span className="font-medium text-gray-400">KES -</span>
                       </div>
-                    )}
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-2">Reliefs</h3>
-                    {results ? (
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-sm">Personal Tax Relief</span>
-                          <span className="font-medium">KES {results.personalRelief.toFixed(2)}</span>
-                        </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">NSSF Contribution</span>
+                        <span className="font-medium text-gray-400">KES -</span>
                       </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-sm">Personal Tax Relief</span>
-                          <span className="font-medium text-gray-400">KES -</span>
-                        </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">SHIF Contribution</span>
+                        <span className="font-medium text-gray-400">KES -</span>
                       </div>
-                    )}
-                  </div>
-
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-3">PAYE Tax Breakdown</h3>
-                    {results ? (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b border-gray-200">
-                              <th className="pb-2 text-left text-gray-600">Tax Band</th>
-                              <th className="pb-2 text-right text-gray-600">Amount</th>
-                              <th className="pb-2 text-right text-gray-600">Rate</th>
-                              <th className="pb-2 text-right text-gray-600">Tax</th>
+                      <div className="flex justify-between">
+                        <span className="text-sm">Affordable Housing Levy</span>
+                        <span className="font-medium text-gray-400">KES -</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">Pension Contribution</span>
+                        <span className="font-medium text-gray-400">KES -</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">Mortgage Interest</span>
+                        <span className="font-medium text-gray-400">KES -</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm">Medical Fund</span>
+                        <span className="font-medium text-gray-400">KES -</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-2">Reliefs</h3>
+                  {results ? (
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Personal Tax Relief</span>
+                        <span className="font-medium">KES {formatNumber(results.personalRelief)}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Personal Tax Relief</span>
+                        <span className="font-medium text-gray-400">KES -</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-800 mb-3">PAYE Tax Breakdown</h3>
+                  {results ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-200">
+                            <th className="pb-2 text-left text-gray-600">Tax Band</th>
+                            <th className="pb-2 text-right text-gray-600">Amount</th>
+                            <th className="pb-2 text-right text-gray-600">Rate</th>
+                            <th className="pb-2 text-right text-gray-600">Tax</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {results.taxBreakdown.map((band, index) => (
+                            <tr key={index} className="border-b border-gray-100">
+                              <td className="py-2 text-left">{band.range}</td>
+                              <td className="py-2 text-right">KES {formatNumber(band.amount)}</td>
+                              <td className="py-2 text-right">{band.rate}</td>
+                              <td className="py-2 text-right font-medium">KES {formatNumber(band.tax)}</td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {results.taxBreakdown.map((band, index) => (
-                              <tr key={index} className="border-b border-gray-100">
-                                <td className="py-2 text-left">{band.range}</td>
-                                <td className="py-2 text-right">KES {band.amount.toLocaleString()}</td>
-                                <td className="py-2 text-right">{band.rate}</td>
-                                <td className="py-2 text-right font-medium">KES {band.tax.toFixed(2)}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                          <thead>
-                            <tr className="border-b border-gray-200">
-                              <th className="pb-2 text-left text-gray-600">Tax Band</th>
-                              <th className="pb-2 text-right text-gray-600">Amount</th>
-                              <th className="pb-2 text-right text-gray-600">Rate</th>
-                              <th className="pb-2 text-right text-gray-600">Tax</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr className="border-b border-gray-100">
-                              <td colSpan="4" className="py-2 text-center text-gray-400">
-                                Enter values to calculate
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
-                  </div>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-200">
+                            <th className="pb-2 text-left text-gray-600">Tax Band</th>
+                            <th className="pb-2 text-right text-gray-600">Amount</th>
+                            <th className="pb-2 text-right text-gray-600">Rate</th>
+                            <th className="pb-2 text-right text-gray-600">Tax</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-gray-100">
+                            <td colSpan="4" className="py-2 text-center text-gray-400">
+                              Enter values to calculate
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </main>
+        {/* Print Container */}
+        <div id="print-content" className="hidden font-roboto max-w-3xl mx-auto p-6">
+          {results ? (
+            <>
+              <h1 className="text-lg font-bold text-blue-800 mb-2">Net Pay Calculator Report</h1>
+              <p className="text-xs text-gray-600 mb-6">Generated: {currentDate}</p>
 
-      <footer className="bg-gray-800 text-white py-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm text-gray-300">© 2025 Net Salary Calculator. This tool is for informational purposes only.</p>
-          <p className="text-xs text-gray-500 mt-1">Rates based on current KRA tax bands and deductions.</p>
+              <h2 className="text-sm font-bold text-blue-800 mt-6 mb-2">Entered Values</h2>
+              <div className="mb-6 space-y-1">
+                <p className="text-xs text-gray-900">Basic Salary: KES {formatNumber(basicSalary || 0)}</p>
+                <p className="text-xs text-gray-900">Benefits/Allowances: KES {formatNumber(benefits || 0)}</p>
+                <p className="text-xs text-gray-900">Pension Contribution: KES {formatNumber(pension || 0)}</p>
+                <p className="text-xs text-gray-900">Mortgage Interest: KES {formatNumber(mortgageInterest || 0)}</p>
+                <p className="text-xs text-gray-900">Medical Fund: KES {formatNumber(medicalFund || 0)}</p>
+              </div>
+
+              <h2 className="text-sm font-bold text-blue-800 mt-6 mb-2">Salary Summary</h2>
+              <div className="mb-6 space-y-1">
+                <p className="text-xs text-gray-900">Gross Salary: KES {formatNumber(results.gross)}</p>
+                <p className="text-xs text-gray-900">Taxable Income: KES {formatNumber(results.taxable)}</p>
+                <p className="text-xs text-gray-900">Total Deductions: KES {formatNumber(results.totalDeductions)}</p>
+                <p className="text-xs text-gray-900">PAYE Tax: KES {formatNumber(results.paye)}</p>
+                <p className="text-xs text-green-700">Net Pay: KES {formatNumber(results.netPay)}</p>
+              </div>
+
+              <h2 className="text-sm font-bold text-blue-800 mt-6 mb-2">Detailed Deductions</h2>
+              <table className="w-full text-xs mb-6 border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-900 font-bold">
+                    <th className="p-2 text-left border-b border-gray-200">Description</th>
+                    <th className="p-2 text-right border-b border-gray-200">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-gray-100">
+                    <td className="p-2">PAYE Tax</td>
+                    <td className="p-2 text-right">KES {formatNumber(results.paye)}</td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="p-2">NSSF Contribution</td>
+                    <td className="p-2 text-right">KES {formatNumber(results.nssf)}</td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="p-2">SHIF Contribution</td>
+                    <td className="p-2 text-right">KES {formatNumber(results.shif)}</td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="p-2">Affordable Housing Levy</td>
+                    <td className="p-2 text-right">KES {formatNumber(results.ahl)}</td>
+                  </tr>
+                  {results.pension > 0 && (
+                    <tr className="border-b border-gray-100">
+                      <td className="p-2">Pension Contribution</td>
+                      <td className="p-2 text-right">KES {formatNumber(results.pension)}</td>
+                    </tr>
+                  )}
+                  {results.mortgage > 0 && (
+                    <tr className="border-b border-gray-100">
+                      <td className="p-2">Mortgage Interest</td>
+                      <td className="p-2 text-right">KES {formatNumber(results.mortgage)}</td>
+                    </tr>
+                  )}
+                  {results.medicalFund > 0 && (
+                    <tr className="border-b border-gray-100">
+                      <td className="p-2">Medical Fund</td>
+                      <td className="p-2 text-right">KES {formatNumber(results.medicalFund)}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+
+              <h2 className="text-sm font-bold text-blue-800 mt-6 mb-2">Reliefs</h2>
+              <table className="w-full text-xs mb-6 border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-900 font-bold">
+                    <th className="p-2 text-left border-b border-gray-200">Description</th>
+                    <th className="p-2 text-right border-b border-gray-200">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-gray-100">
+                    <td className="p-2">Personal Tax Relief</td>
+                    <td className="p-2 text-right">KES {formatNumber(results.personalRelief)}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h2 className="text-sm font-bold text-blue-800 mt-6 mb-2">PAYE Tax Breakdown</h2>
+              <table className="w-full text-xs mb-6 border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 text-gray-900 font-bold">
+                    <th className="p-2 text-left border-b border-gray-200">Tax Band</th>
+                    <th className="p-2 text-right border-b border-gray-200">Amount</th>
+                    <th className="p-2 text-right border-b border-gray-200">Rate</th>
+                    <th className="p-2 text-right border-b border-gray-200">Tax</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results.taxBreakdown.map((band, index) => (
+                    <tr key={index} className="border-b border-gray-100">
+                      <td className="p-2 text-left">{band.range}</td>
+                      <td className="p-2 text-right">KES {formatNumber(band.amount)}</td>
+                      <td className="p-2 text-right">{band.rate}</td>
+                      <td className="p-2 text-right">KES {formatNumber(band.tax)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <p className="text-[10px] text-gray-500 text-center mt-6">
+                © 2025 Net Salary Calculator. Rates based on current KRA tax bands.
+              </p>
+            </>
+          ) : (
+            <p className="text-xs text-gray-600 text-center">No results available. Please calculate your salary first.</p>
+          )}
         </div>
-      </footer>
-    </div>
+      </div>
+    </main>
   );
 };
 
