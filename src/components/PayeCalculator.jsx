@@ -219,7 +219,7 @@ const PayeCalculator = ({
                       inputMode="numeric"
                       value={basicSalary}
                       onChange={(e) => handleInputChange(e.target.value, setBasicSalary, 'basicSalary')}
-                      className="pl-10 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="pl-12 sm:pl-14 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
                     />
                   </div>
@@ -234,7 +234,7 @@ const PayeCalculator = ({
                       inputMode="numeric"
                       value={benefits}
                       onChange={(e) => handleInputChange(e.target.value, setBenefits, 'benefits')}
-                      className="pl-10 sm:pl-12 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="pl-12 sm:pl-14 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   {errors.benefits && <p className="text-red-500 text-xs mt-1">{errors.benefits}</p>}
@@ -248,7 +248,7 @@ const PayeCalculator = ({
                       inputMode="numeric"
                       value={pension}
                       onChange={(e) => handleInputChange(e.target.value, setPension, 'pension')}
-                      className="pl-10 sm:pl-12 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="pl-12 sm:pl-14 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   {errors.pension && <p className="text-red-500 text-xs mt-1">{errors.pension}</p>}
@@ -262,7 +262,7 @@ const PayeCalculator = ({
                       inputMode="numeric"
                       value={mortgageInterest}
                       onChange={(e) => handleInputChange(e.target.value, setMortgageInterest, 'mortgageInterest')}
-                      className="pl-10 sm:pl-12 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="pl-12 sm:pl-14 block w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   {errors.mortgageInterest && <p className="text-red-500 text-xs mt-1">{errors.mortgageInterest}</p>}
@@ -491,37 +491,37 @@ const PayeCalculator = ({
                   )}
                 </div>
                 {results && (
-                  <div className="flex sm:hidden space-x-3 mt-6">
-                    <button
-                      onClick={handlePrint}
-                      className="flex items-center flex-1 bg-gray-100 text-gray-800 px-3 py-2 rounded-xl shadow hover:bg-gray-200 transition text-sm"
-                    >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-                        />
-                      </svg>
-                      Print
-                    </button>
-                    <button
-                      onClick={generatePDF}
-                      className="flex items-center flex-1 bg-gray-100 text-gray-800 px-3 py-2 rounded-xl shadow hover:bg-gray-200 transition text-sm"
-                    >
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 11c0-1.1-.9-2-2-2H6a2 2 0 00-2 2v6h4v2h8v-2h4v-6a2 2 0 00-2-2h-4c-1.1 0-2 .9-2 2zM8 9V5a2 2 0 012-2h4a2 2 0 012 2v4"
-                        />
-                      </svg>
-                      Export PDF
-                    </button>
-                  </div>
-                )}
+  <div className="flex sm:hidden space-x-3 mt-6">
+    <button
+      onClick={handlePrint}
+      className="flex items-center flex-1 bg-blue-600 text-white px-3 py-2 rounded-xl shadow hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+    >
+      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+        />
+      </svg>
+      Print
+    </button>
+    <button
+      onClick={generatePDF}
+      className="flex items-center flex-1 bg-blue-600 text-white px-3 py-2 rounded-xl shadow hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+    >
+      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 11c0-1.1-.9-2-2-2H6a2 2 0 00-2 2v6h4v2h8v-2h4v-6a2 2 0 00-2-2h-4c-1.1 0-2 .9-2 2zM8 9V5a2 2 0 012-2h4a2 2 0 012 2v4"
+        />
+      </svg>
+      Export PDF
+    </button>
+  </div>
+)}
               </div>
             </div>
           </div>

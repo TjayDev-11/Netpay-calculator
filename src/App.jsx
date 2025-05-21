@@ -156,6 +156,8 @@ function App() {
         setMortgageInterest={setMortgageInterest}
         medicalFund={medicalFund}
         setMedicalFund={setMedicalFund}
+        handlePrint={handlePrint} // Add this
+        generatePDF={generatePDF} // Add this
       />
       <Footer />
     </div>

@@ -11,37 +11,37 @@ const Navbar = ({ handlePrint, generatePDF, results }) => (
         <p className="text-base text-gray-600">Calculate Net Pay, PAYE, NSSF & Deductions</p>
       </div>
       <div className="hidden sm:flex space-x-3">
-        <button
-          onClick={handlePrint}
-          disabled={!results}
-          className="flex items-center bg-gray-100 text-gray-800 px-4 py-2 rounded-xl shadow hover:bg-gray-200 transition disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-            />
-          </svg>
-          Print
-        </button>
-        <button
-          onClick={generatePDF}
-          disabled={!results}
-          className="flex items-center bg-gray-100 text-gray-800 px-4 py-2 rounded-xl shadow hover:bg-gray-200 transition disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 11c0-1.1-.9-2-2-2H6a2 2 0 00-2 2v6h4v2h8v-2h4v-6a2 2 0 00-2-2h-4c-1.1 0-2 .9-2 2zM8 9V5a2 2 0 012-2h4a2 2 0 012 2v4"
-            />
-          </svg>
-          Export PDF
-        </button>
-      </div>
+  <button
+    onClick={handlePrint}
+    disabled={!results}
+    className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+      />
+    </svg>
+    Print
+  </button>
+  <button
+    onClick={generatePDF}
+    disabled={!results}
+    className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 11c0-1.1-.9-2-2-2H6a2 2 0 00-2 2v6h4v2h8v-2h4v-6a2 2 0 00-2-2h-4c-1.1 0-2 .9-2 2zM8 9V5a2 2 0 012-2h4a2 2 0 012 2v4"
+      />
+    </svg>
+    Export PDF
+  </button>
+</div>
     </div>
   </header>
 );
