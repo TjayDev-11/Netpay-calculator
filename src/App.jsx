@@ -121,12 +121,12 @@ function App() {
           margin: [0, 10],
         },
         styles: {
-          header: { fontSize: 18, bold: true, color: '#1e40af', margin: [0, 0, 0, 10] },
-          subheader: { fontSize: 12, color: '#4b5563' },
-          sectionHeader: { fontSize: 14, bold: true, color: '#1e40af', margin: [0, 10] },
-          tableHeader: { fontSize: 12, bold: true, fillColor: '#e5e7eb', color: '#111827' },
-          text: { fontSize: 12, color: '#111827' },
-          footer: { fontSize: 10, color: '#6b7280' },
+          header: { fontSize: 18, bold: true, color: '#0F0E47', margin: [0, 0, 0, 10] },
+          subheader: { fontSize: 12, color: '#272757' },
+          sectionHeader: { fontSize: 14, bold: true, color: '#0F0E47', margin: [0, 10] },
+          tableHeader: { fontSize: 12, bold: true, fillColor: '#8686AC', color: '#0F0E47' },
+          text: { fontSize: 12, color: '#0F0E47' },
+          footer: { fontSize: 10, color: '#272757' },
         },
         pageMargins: [40, 40, 40, 60],
       };
@@ -141,25 +141,34 @@ function App() {
   };
 
   return (
-    <div>
-      <Navbar handlePrint={handlePrint} generatePDF={generatePDF} results={results} />
-      <PayeCalculator
-        setResults={setResults}
-        results={results}
-        basicSalary={basicSalary}
-        setBasicSalary={setBasicSalary}
-        benefits={benefits}
-        setBenefits={setBenefits}
-        pension={pension}
-        setPension={setPension}
-        mortgageInterest={mortgageInterest}
-        setMortgageInterest={setMortgageInterest}
-        medicalFund={medicalFund}
-        setMedicalFund={setMedicalFund}
-        handlePrint={handlePrint} // Add this
-        generatePDF={generatePDF} // Add this
-      />
-      <Footer />
+    <div className="min-h-screen bg-gradient-to-br from-[#e3e9eacf] to-[#7d7474] relative overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-50"
+        style={{
+          background: 'radial-gradient(circle at 20% 30%, rgba(134, 134, 172, 0.3), transparent 70%), radial-gradient(circle at 80% 70%, rgba(80, 80, 129, 0.3), transparent 70%)',
+          filter: 'blur(50px)',
+        }}
+      ></div>
+      <div className="relative z-10">
+        <Navbar handlePrint={handlePrint} generatePDF={generatePDF} results={results} />
+        <PayeCalculator
+          setResults={setResults}
+          results={results}
+          basicSalary={basicSalary}
+          setBasicSalary={setBasicSalary}
+          benefits={benefits}
+          setBenefits={setBenefits}
+          pension={pension}
+          setPension={setPension}
+          mortgageInterest={mortgageInterest}
+          setMortgageInterest={setMortgageInterest}
+          medicalFund={medicalFund}
+          setMedicalFund={setMedicalFund}
+          handlePrint={handlePrint}
+          generatePDF={generatePDF}
+        />
+        <Footer />
+      </div>
     </div>
   );
 }
